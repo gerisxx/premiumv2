@@ -1,0 +1,39 @@
+-- hi skid
+
+local function parseTimeUnit(timeString)
+    local timeValue, timeUnit = timeString:match("(%d+)%s?(%a+)")
+    timeValue = tonumber(timeValue)
+    if timeUnit and timeValue then
+        timeUnit = timeUnit:lower()
+        local unitValues = {
+            seconds = 1,
+            minutes = 60,
+            hours = 3600
+        }
+        local unitMultiplier = unitValues[timeUnit]
+        if unitMultiplier then
+            return timeValue * unitMultiplier
+        end
+    end
+    return nil
+end
+
+local startserverhop = getgenv().serverhop
+
+spawn(function()
+    local hopTime = parseTimeUnit(getgenv().serverhoptime)
+    if not hopTime then
+        hopTime = 3
+    end
+    
+    while startserverhop do
+        wait(hopTime)
+        local success, module = pcall(function()
+            return loadstring(game:HttpGet("https://raw.githubusercontent.com/LeoKholYt/roblox/main/lk_serverhop.lua"))()
+        end)
+        
+        if success then
+            module:Teleport(game.PlaceId)
+        end
+    end
+end)
